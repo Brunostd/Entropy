@@ -41,6 +41,14 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
+
+        binding.buttonGain.setOnClickListener {
+            if (binding.repeticoesEntropia.text.toString().isNotEmpty()){
+                var aux = binding.repeticoesEntropia.text.toString()
+                val action = HomeFragmentDirections.actionHomeFragmentToEntropyGainFragment(aux)
+                findNavController().navigate(action)
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="18dp"
         android:text="Digite o numero"
+        android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
@@ -37,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Digite o numero a ser calculado"
-            android:inputType="number" />
+            android:inputType="number|numberDecimal" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button

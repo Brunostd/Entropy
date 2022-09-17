@@ -5,10 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.entropy.R
 import com.example.entropy.databinding.FragmentEntropyBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.math.abs
 import kotlin.math.log
 import kotlin.math.nextDown
@@ -58,14 +60,22 @@ class EntropyFragment : Fragment() {
 
             if (count < args.repetitionsLog.toInt()){
                 listEntropy.add(entropy)
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Calculo")
+                    .setMessage("Seu calculo foi confirmado, por favor informe os calculos restantes")
+                    .setPositiveButton("Ok") { dialog, which ->
+                        // Respond to positive button press
+                    }
+                    .show()
             }
             count++
             if (count == args.repetitionsLog.toInt()){
                 listEntropy.forEach {
                     masterEntropy += it
+                    binding.buttonCalculo.isEnabled = false
                 }
                 var positive = abs(masterEntropy)
-                binding.result.text = masterEntropy.toString()
+                binding.result.text = masterEntropy.toString().substring(1)
             }
         }
     }

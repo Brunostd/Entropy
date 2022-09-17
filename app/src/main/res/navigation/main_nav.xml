@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_entropyFragment"
             app:destination="@id/entropyFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_entropyGainFragment"
+            app:destination="@id/entropyGainFragment" />
     </fragment>
     <fragment
         android:id="@+id/entropyFragment"
@@ -21,6 +24,14 @@
         tools:layout="@layout/fragment_entropy" >
         <argument
             android:name="repetitionsLog"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/entropyGainFragment"
+        android:name="com.example.entropy.fragments.EntropyGainFragment"
+        android:label="EntropyGainFragment" >
+        <argument
+            android:name="repetitionsGain"
             app:argType="string" />
     </fragment>
 </navigation>

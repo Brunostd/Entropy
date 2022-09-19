@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.entropy.R
 import com.example.entropy.databinding.FragmentEntropyBinding
+import com.example.entropy.viewmodel.EnytropyViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.math.abs
 import kotlin.math.log
@@ -20,13 +23,13 @@ class EntropyFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var viewModel: EnytropyViewModel
     private val args: EntropyFragmentArgs by navArgs()
-    private var entropy: Double = 0.0
-    private var listEntropy: MutableList<Double> = arrayListOf()
-    private var masterEntropy: Double = 0.0
 
-    private var auxCalculo: Double = 0.0
-    private var count: Int = 0
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,34 +51,20 @@ class EntropyFragment : Fragment() {
         }
 
         binding.buttonCalculo.setOnClickListener {
-            var auxString1 = binding.calculo1.text.toString()
-            var auxString2 = binding.calculo2.text.toString()
-            var a = auxString1.toDouble()
-            var b = auxString2.toDouble()
-            auxCalculo = (a/b)
-            var auxLog = log(auxCalculo, 2.0)
-            auxCalculo = -auxCalculo
-            var negative = abs(auxCalculo)
-            entropy = negative*auxLog
-
-            if (count < args.repetitionsLog.toInt()){
-                listEntropy.add(entropy)
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Calculo")
-                    .setMessage("Seu calculo foi confirmado, por favor informe os calculos restantes")
-                    .setPositiveButton("Ok") { dialog, which ->
-                        // Respond to positive button press
-                    }
-                    .show()
-            }
-            count++
-            if (count == args.repetitionsLog.toInt()){
-                listEntropy.forEach {
-                    masterEntropy += it
-                    binding.buttonCalculo.isEnabled = false
+            var auxString1 = binding.calculo1.text.toString().toDouble()
+            var auxString2 = binding.calculo2.text.toString().toDouble()
+            viewModel.calculate(auxString1, auxString2, args.repetitionsLog.toInt()).observe(viewLifecycleOwner){ result ->
+                if (result != 0.0){
+                    binding.result.text = result.toString().substring(1)
+                } else{
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Calculo")
+                        .setMessage("Seu calculo foi confirmado, por favor informe os calculos restantes")
+                        .setPositiveButton("Ok") { dialog, which ->
+                            // Respond to positive button press
+                        }
+                        .show()
                 }
-                var positive = abs(masterEntropy)
-                binding.result.text = masterEntropy.toString().substring(1)
             }
         }
     }

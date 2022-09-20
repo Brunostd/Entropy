@@ -4,6 +4,7 @@
 ##
 # Skills utilizadas no projeto
 - MVVM
+- KOIN dependency injection
 - viewBinding
 - Coroutines
 - Navigation e navigation args

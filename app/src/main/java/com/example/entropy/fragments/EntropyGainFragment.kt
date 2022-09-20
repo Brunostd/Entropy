@@ -5,10 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.get
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.entropy.R
 import com.example.entropy.databinding.FragmentEntropyGainBinding
+import com.example.entropy.viewmodel.EntropyGainViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EntropyGainFragment : Fragment() {
@@ -16,10 +19,13 @@ class EntropyGainFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var viewModel: EntropyGainViewModel
     private val args: EntropyGainFragmentArgs by navArgs()
-    private var listCalculo: MutableList<Double> = arrayListOf()
-    private var masterCalculo: Double = 0.0
-    private var count: Int = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,27 +51,25 @@ class EntropyGainFragment : Fragment() {
             var calculo2         = binding.calculo2Gain.text.toString().toDouble()
             var entropySecundary = binding.entropySecundary.text.toString().toDouble()
 
-            var auxDivisao = calculo1/calculo2
-            var auxCalculo = auxDivisao * entropySecundary
-
-            if (count < args.repetitionsGain.toInt()){
-                listCalculo.add(auxCalculo)
-                MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Calculo")
-                    .setMessage("Seu calculo foi confirmado, por favor informe os calculos restantes")
-                    .setPositiveButton("Ok") { dialog, which ->
-                        // Respond to positive button press
-                    }
-                    .show()
-            }
-            count++
-            if (count == args.repetitionsGain.toInt()){
-                listCalculo.forEach{
-                    masterCalculo += it
+            viewModel.calcularGain(
+                entropyMain,
+                calculo1,
+                calculo2,
+                entropySecundary,
+                args.repetitionsGain.toInt()
+            ).observe(viewLifecycleOwner){ result ->
+                if ( result != 0.0){
+                    binding.buttonCalculateGain.isEnabled = false
+                    binding.entropyGainResult.text = result.toString()
+                } else{
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Calculo")
+                        .setMessage("Seu calculo foi confirmado, por favor informe os calculos restantes")
+                        .setPositiveButton("Ok") { dialog, which ->
+                            // Respond to positive button press
+                        }
+                        .show()
                 }
-                masterCalculo = entropyMain - masterCalculo
-                binding.buttonCalculateGain.isEnabled = false
-                binding.entropyGainResult.text = masterCalculo.toString()
             }
         }
     }

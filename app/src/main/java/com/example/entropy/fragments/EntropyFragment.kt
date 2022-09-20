@@ -14,6 +14,7 @@ import com.example.entropy.R
 import com.example.entropy.databinding.FragmentEntropyBinding
 import com.example.entropy.viewmodel.EnytropyViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.abs
 import kotlin.math.log
 import kotlin.math.nextDown
@@ -23,12 +24,11 @@ class EntropyFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private lateinit var viewModel: EnytropyViewModel
+    private val viewModel: EnytropyViewModel by viewModel()
     private val args: EntropyFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get()
     }
 
     override fun onCreateView(
